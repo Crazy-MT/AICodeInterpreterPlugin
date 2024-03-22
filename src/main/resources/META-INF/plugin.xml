@@ -1,0 +1,32 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.crazymt.aicodeinterpreter</id>
+    <name>AICodeInterpreter</name>
+    <version>1.0</version>
+    <vendor email="ytumaotong@gmail.com" url="https://github.com/Crazy-MT/AICodeInterpreterPlugin">AITranslate</vendor>
+    <description><![CDATA[
+       The AICodeInterpreter, an IntelliJ plugin, seamlessly integrates Ollama and Google Gemini Pro. It interprets selected code snippets, generates comments, and polishes them, significantly enhancing code readability and comprehension. <br>
+    ]]></description>
+
+    <idea-version since-build="145.0"/>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <resource-bundle>messages.MyBundle</resource-bundle>
+    <actions>
+        <action id="AICodeInterpreter.InterpreterAction"
+                class="com.crazymt.aicodeinterpreter.InterpreterAction" text="AICodeInterpreter"
+                description="code interpreter">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt c"/>
+        </action>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                parentId="tools"
+                instance="com.crazymt.aicodeinterpreter.AppSettingsConfigurable"
+                id="AICodeInterpreter.AppSettingsConfigurable"
+                displayName="AICodeInterpreter"/>
+    </extensions>
+</idea-plugin>
