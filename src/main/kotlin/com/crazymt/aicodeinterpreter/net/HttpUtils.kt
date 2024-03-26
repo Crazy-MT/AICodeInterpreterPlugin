@@ -17,7 +17,7 @@ var ollamaURL = LocalData.read("ollamaURL")
 var modelName = LocalData.read("modelName")
 var geminiAPIKey = LocalData.read("geminiAPIKey")
 
-fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<TranslateResult>) {
+fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<ModelResult>) {
     try {
         /*LocalData.read(queryWord)?.let {
             try {
@@ -62,7 +62,7 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Trans
                     val content = StreamUtils.getStringFromStream(ins)
                     if (content.isNotBlank()) {
 //                        println(content);
-                        val result = Gson().fromJson(content, OllamaBean::class.java).toTranslateResult()
+                        val result = Gson().fromJson(content, OllamaBean::class.java).toModelResult()
                         callBack.onSuccess(result)
                         //                    LocalData.store(queryWord, Gson().toJson(result))
                     } else {
@@ -136,7 +136,7 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Trans
                     val content = StreamUtils.getStringFromStream(ins)
                     if (content.isNotBlank()) {
                         println(content);
-                        val result = Gson().fromJson(content, GeminiBean::class.java).toTranslateResult()
+                        val result = Gson().fromJson(content, GeminiBean::class.java).toModelResult()
                         callBack.onSuccess(result)
                         //                    LocalData.store(queryWord, Gson().toJson(result))
                     } else {

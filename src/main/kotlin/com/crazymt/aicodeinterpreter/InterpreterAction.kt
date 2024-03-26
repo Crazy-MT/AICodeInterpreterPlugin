@@ -9,7 +9,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.crazymt.aicodeinterpreter.bean.TranslateResult
+import com.crazymt.aicodeinterpreter.bean.ModelResult
 import com.crazymt.aicodeinterpreter.net.NetCallback
 import com.crazymt.aicodeinterpreter.net.requestNetData
 
@@ -50,8 +50,8 @@ class InterpreterAction : AnAction() {
 
             Thread{
                 /* 第二步 ---> API查询 */
-                requestNetData(fileExtension, selectedText, object : NetCallback<TranslateResult> {
-                    override fun onSuccess(data: TranslateResult) {
+                requestNetData(fileExtension, selectedText, object : NetCallback<ModelResult> {
+                    override fun onSuccess(data: ModelResult) {
                         println(data.toString())
                         val text: String
                         if (data.result != null) {
