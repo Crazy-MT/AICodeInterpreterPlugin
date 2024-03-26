@@ -15,12 +15,18 @@ import javax.swing.JRadioButton
  */
 class AppSettingsComponent {
     val panel: JPanel
+
+    private val rbOllama = JRadioButton("Ollama 配置");
     private val etOllamaURL = JBTextField("http://localhost:11434/api/generate")
     private val etModelName = JBTextField() // gemma:2b
+
+    private val rbGemini = JRadioButton("Gemini 配置");
     private val etGemini = JBTextField()
 
-    private val rbOllama = JRadioButton("Ollama 翻译配置");
-    private val rbGemini = JRadioButton("Gemini 翻译配置");
+    private val rbOpenAI = JRadioButton("OpenAI 配置");
+    private val etOpenAIURL = JBTextField()
+    private val etOpenAIModelName = JBTextField()
+    private val etOpenAIAPIKey = JBTextField()
 
     private val buttonGroup = ButtonGroup();
 
@@ -28,6 +34,7 @@ class AppSettingsComponent {
         etOllamaURL.text = "http://localhost:11434/api/generate"
         buttonGroup.add(rbOllama)
         buttonGroup.add(rbGemini)
+        buttonGroup.add(rbOpenAI)
 
         rbOllama.addItemListener {
             val source = it.source as JRadioButton
@@ -40,6 +47,13 @@ class AppSettingsComponent {
             val source = it.source as JRadioButton
             if (source.isSelected) {
                 sourceType = SourceGemini
+            }
+        }
+
+        rbOpenAI.addItemListener {
+            val source = it.source as JRadioButton
+            if (source.isSelected) {
+                sourceType = SourceOpenAI
             }
         }
 
@@ -67,6 +81,17 @@ class AppSettingsComponent {
                 )
             )
             .addLabeledComponent(JBLabel("api key"), etGemini, 1, false)
+            .addComponent(rbOpenAI)
+            .addComponent(
+                JBLabel(
+                    "支持类 OpenAI 的 API，包括但不限于 OpenAI、Moonshot、DeepSeek……，只需提供 API URL、API key、Model name 即可",
+                    ComponentStyle.SMALL,
+                    UIUtil.FontColor.BRIGHTER
+                )
+            )
+            .addLabeledComponent(JBLabel("url"), etOpenAIURL, 1, false)
+            .addLabeledComponent(JBLabel("model name"), etOpenAIModelName, 1, false)
+            .addLabeledComponent(JBLabel("api key"), etOpenAIAPIKey, 1, false)
             .addComponentFillVertically(JPanel(), 0)
             .panel
     }
@@ -107,6 +132,10 @@ class AppSettingsComponent {
             if (rbGemini.isSelected) {
                 return SourceGemini
             }
+
+            if (rbOpenAI.isSelected) {
+                return SourceOpenAI
+            }
             return SourceGemini
         }
         set(newText) {
@@ -116,5 +145,36 @@ class AppSettingsComponent {
             if (newText == SourceGemini) {
                 buttonGroup.setSelected(rbGemini.model, true)
             }
+
+            if (newText == SourceOpenAI) {
+                buttonGroup.setSelected(rbOpenAI.model, true)
+            }
         }
+
+    @get:NotNull
+    var openAIURL: String
+        get() = etOpenAIURL.getText()
+        set(newText) {
+            if (newText == "") {
+                etOpenAIURL.text = "https://api.openai.com/v1/chat/completions"
+            } else {
+                etOpenAIURL.setText(newText)
+            }
+            etOpenAIURL.setText(newText)
+        }
+
+    @get:NotNull
+    var openAIModelName: String
+        get() = etOpenAIModelName.getText()
+        set(newText) {
+            etOpenAIModelName.setText(newText)
+        }
+
+    @get:NotNull
+    var openAIAPIKey: String
+        get() = etOpenAIAPIKey.getText()
+        set(newText) {
+            etOpenAIAPIKey.setText(newText)
+        }
+
 }

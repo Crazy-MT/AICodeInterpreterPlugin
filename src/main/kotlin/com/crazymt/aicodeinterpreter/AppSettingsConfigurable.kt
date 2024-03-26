@@ -30,12 +30,19 @@ internal class AppSettingsConfigurable : Configurable {
         val modelName = LocalData.read("modelName")
         val geminiAPIkey = LocalData.read("geminiAPIKey")
 
+        val openAIURL = LocalData.read("openAIURL")
+        val openAIModelName = LocalData.read("openAIModelName")
+        val openAIAPIKey = LocalData.read("openAIAPIKey")
+
         var modified: Boolean = !mySettingsComponent?.sourceType.equals(sourceType)
 
         modified = modified
                 || !mySettingsComponent?.ollamaURL.equals(ollamaURL)
                 || !mySettingsComponent?.modelName.equals(modelName)
                 || !mySettingsComponent?.geminiAPIKey.equals(geminiAPIkey)
+                || !mySettingsComponent?.openAIURL.equals(openAIURL)
+                || !mySettingsComponent?.openAIModelName.equals(openAIModelName)
+                || !mySettingsComponent?.openAIAPIKey.equals(openAIAPIKey)
         return modified
     }
     ///保存设置
@@ -46,14 +53,25 @@ internal class AppSettingsConfigurable : Configurable {
         val _modelName = mySettingsComponent?.modelName ?: ""
         val _geminiAPIKey = mySettingsComponent?.geminiAPIKey ?: ""
 
+        val _openAIURL = mySettingsComponent?.openAIURL ?:"https://api.openai.com/v1/chat/completions"
+        val _openAIModelName = mySettingsComponent?.openAIModelName ?:"gpt-3.5-turbo"
+        val _openAIAPIKey =  mySettingsComponent?.openAIAPIKey ?:""
+
         LocalData.store("sourceType", _sourceType)
         LocalData.store("ollamaURL", _ollamaURL)
         LocalData.store("modelName", _modelName)
         LocalData.store("geminiAPIKey", _geminiAPIKey)
+        LocalData.store("openAIURL", _openAIURL)
+        LocalData.store("openAIModelName", _openAIModelName)
+        LocalData.store("openAIAPIKey", _openAIAPIKey)
+
         sourceType = _sourceType
         ollamaURL = _ollamaURL
         modelName = _modelName
         geminiAPIKey = _geminiAPIKey
+        openAIURL = _openAIURL
+        openAIModelName = _openAIModelName
+        openAIAPIKey = _openAIAPIKey
     }
 
     override fun reset() {
@@ -62,11 +80,18 @@ internal class AppSettingsConfigurable : Configurable {
         val modelName = LocalData.read("modelName")
         val geminiAPIKey = LocalData.read("geminiAPIKey")
 
+        val openAIURL = LocalData.read("openAIURL")
+        val openAIModelName = LocalData.read("openAIModelName")
+        val openAIAPIKey = LocalData.read("openAIAPIKey")
+
         mySettingsComponent?.let {
             it.sourceType = sourceType ?: ""
             it.ollamaURL = ollamaURL ?: "http://localhost:11434/api/generate"
             it.modelName = modelName ?: ""
             it.geminiAPIKey = geminiAPIKey ?: ""
+            it.openAIURL = openAIURL ?: "https://api.openai.com/v1/chat/completions"
+            it.openAIModelName = openAIModelName ?: "gpt-3.5-turbo"
+            it.openAIAPIKey = openAIAPIKey ?: ""
         }
     }
 

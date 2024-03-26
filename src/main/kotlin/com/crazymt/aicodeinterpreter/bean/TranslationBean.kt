@@ -2,6 +2,7 @@ package com.crazymt.aicodeinterpreter.bean
 
 import com.crazymt.aicodeinterpreter.net.SourceGemini
 import com.crazymt.aicodeinterpreter.net.SourceOllama
+import com.crazymt.aicodeinterpreter.net.SourceOpenAI
 
 data class ModelResult(val source: String, val from: String, val to: String, val src: String, val result: String?, val error: String?) {
     override fun toString(): String {
@@ -47,5 +48,37 @@ data class SafetyRating(
 data class PromptFeedback(
     val safetyRatings: List<SafetyRating>
 )
+
+
+data class OpenAIBean(
+    val id: String,
+    val `object`: String,
+    val created: Long,
+    val model: String,
+    val choices: List<Choice>,
+    val usage: Usage
+) {
+    fun toModelResult(): ModelResult {
+        return ModelResult(SourceOpenAI, SourceOpenAI, choices[0].message.content, choices[0].message.content, choices[0].message.content, "");
+    }
+}
+
+data class Choice(
+    val index: Int,
+    val message: Message,
+    val finish_reason: String
+)
+
+data class Message(
+    val role: String,
+    val content: String
+)
+
+data class Usage(
+    val prompt_tokens: Int,
+    val completion_tokens: Int,
+    val total_tokens: Int
+)
+
 
 
