@@ -7,6 +7,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 import java.io.OutputStreamWriter
+import java.net.URLEncoder
 
 val SourceOllama = "Ollama(本地模型)"
 val SourceGemini = "Gemini"
@@ -33,6 +34,8 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Model
             }
             return
         }*/
+        val queryStr = URLEncoder.encode(queryWord.replace(Regex("[*+\\- \r]+"), " "), "UTF-8")
+
         when (sourceType) {
             SourceOllama -> {
                 val url = URL(ollamaURL)
@@ -50,9 +53,9 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Model
                 val jsonInputString = """
                     {
                         "model": "$modelName",
-                        "prompt": "${queryWord.replace(Regex("[*+\\- \r]+"), " ")}",
+                        "prompt": "${queryStr}",
                         "stream": false,
-                        "system":"你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryWord.replace(Regex("[*+\\- \r]+"), " ")}"
+                        "system":"你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryStr}"
                     }
                     """.trimIndent()
 //                println(jsonInputString)
@@ -96,7 +99,7 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Model
                         {
                           "parts": [
                             {
-                              "text": "你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryWord.replace(Regex("[*+\\- \r]+"), " ")}"
+                              "text": "你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryStr}"
                             }
                           ]
                         }
@@ -167,7 +170,7 @@ fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<Model
                      "model": "$openAIModelName",
                      "messages": [
                         {"role": "system", "content": "你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。"},
-                        {"role": "user", "content": "${queryWord.replace(Regex("[*+\\- \r]+"), " ")}"}
+                        {"role": "user", "content": "${queryStr}"}
                      ],
                      "temperature": 0.3
                     }

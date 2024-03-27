@@ -9,3 +9,8 @@
 ## [1.1.0]
 ### Changed
 - support Moonshot、DeepSeek and OpenAI
+
+
+## [1.2.0]
+### Changed
+- fix bug
