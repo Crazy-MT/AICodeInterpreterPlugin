@@ -2,6 +2,7 @@
 <!-- Plugin description -->
 ## Description
 AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
+
 AICodeInterpreter是一款IntelliJ IDEA插件，为开发人员提供便捷的代码解释功能。该插件默认支持免费的ChatGPT 3.5 API，使用户能够将选中的代码片段转换为自然语言描述。同时，用户还可以根据需要自行配置使用Ollama、Google Gemini Pro、Kimi(Moonshot)、DeepSeek等生成式语言模型。
 
 ## Features
@@ -27,7 +28,7 @@ Key features include:
 
 ## Getting Started
 
-<kbd>Choose Code/Text</kbd> > <kbd>Right Click / alt(option)+c</kbd> > <kbd>AICodeInterpreter</kbd> >
+<kbd>Choose Code/Text</kbd> > <kbd>Right Click / Alt(Option)+C</kbd> > <kbd>AICodeInterpreter</kbd> >
 
 ## 效果
 ![1.png](image/1.png)
