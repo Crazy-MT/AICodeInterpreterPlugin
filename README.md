@@ -31,9 +31,9 @@ Key features include:
 <kbd>Choose Code/Text</kbd> > <kbd>Right Click / Alt(Option)+C</kbd> > <kbd>AICodeInterpreter</kbd> >
 
 ## 效果
-![1.png](image/1.png)
-![2.png](image/2.png)
-![3.png](image/3.png)
+![1.png](image/4.png)
+![2.png](image/5.png)
+![3.png](image/6.png)
 
 <!-- Plugin description end -->
 [Page on plugin repository site](https://plugins.jetbrains.com/plugin/24011-aicodeinterpreter)
