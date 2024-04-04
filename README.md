@@ -1,21 +1,33 @@
 # AICodeInterpreter
 <!-- Plugin description -->
 ## Description
-The AICodeInterpreter, an IntelliJ plugin, seamlessly integrates Ollama and Google Gemini Pro. It interprets selected code snippets, generates comments, and polishes them, significantly enhancing code readability and comprehension.
+AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
+AICodeInterpreter是一款IntelliJ IDEA插件，为开发人员提供便捷的代码解释功能。该插件默认支持免费的ChatGPT 3.5 API，使用户能够将选中的代码片段转换为自然语言描述。同时，用户还可以根据需要自行配置使用Ollama、Google Gemini Pro、Kimi(Moonshot)、DeepSeek等生成式语言模型。
 
-这是一款基于IntelliJ的插件，名为AI代码解释器，旨在提高代码的可读性和理解性。该插件集成了Ollama本地大型模型和Google Gemini Pro大型模型，为用户提供强大的功能支持。
- 
-- AICodeInterpreter is available with JetBrains IDEs.
-- Supported language: Java, Python, Go, C/C++, C#, JavaScript, TypeScript, PHP, Ruby, Rust, Scala and other programming languages.
-- 兼容 Visual Studio Code、JetBrains IDEs 等主流 IDE；
-- 支持 Java、Python、Go、C/C++、C#、JavaScript、TypeScript、PHP、Ruby、Rust、Scala 等主流编程语言。
 ## Features
 Key features include:
 
-Code Interpretation: Select a piece of code, and the plugin can interpret its usage, helping developers grasp functionality and intent more efficiently.
-Supports over 40 programming languages, automatically recognizes programming languages and generates code explanations. Crossing the boundaries of programming languages and coding with more confidence.
+- Intelligent Code Interpretation: With a simple keyboard shortcut or right-click menu, users can request the plugin to interpret code into easily understandable natural language descriptions.
+- Default Support for Free API: AICodeInterpreter seamlessly integrates with the free ChatGPT 3.5 API, enabling users to start using code interpretation functionality without additional payment or subscription.
+- Configurable Language Models: Users can select and configure different generative language models according to their requirements, including Ollama, Google Gemini Pro, Moonshot, DeepSeek, etc., for diversified and specialized code interpretation.
+- Multi-Language Support: The plugin supports code interpretation for various programming languages, including Java, Python, JavaScript, and others, catering to the needs of different developers.
 
-代码解释：选中代码后，插件可以解释其使用方法，帮助开发者更快地理解代码的功能和意图。支持 40 多种语言的识别，选中代码后可自动识别编程语言并生成代码解释。跨越语言的边界，让你编码更自信。
+关键特性包括:
+- 智能代码解释： 选中代码片段后，通过简单的快捷键或右键菜单，用户可以请求插件将代码解释为易于理解的自然语言描述。
+- 默认支持免费API： AICodeInterpreter默认支持免费的ChatGPT 3.5 API，用户可以直接开始使用代码解释功能，无需额外的付费或订阅。
+- 可配置多种语言模型： 用户可以根据需求选择并配置使用不同的生成式语言模型，包括Ollama、Google Gemini Pro、Moonshot、DeepSeek等，以获取更多样化和专业化的代码解释效果。
+- 多语言支持： 插件支持多种编程语言的代码解释，包括Java、Python、JavaScript等主流语言，满足不同开发人员的需求。
+
+## Installation
+
+- Install using the IDE's built-in plugin system:
+
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "AICodeInterpreter"</kbd> >
+  <kbd>Install Plugin</kbd>
+
+## Getting Started
+
+<kbd>Choose Code/Text</kbd> > <kbd>Right Click / alt(option)+c</kbd> > <kbd>AICodeInterpreter</kbd> >
 
 ## 效果
 ![1.png](image/1.png)

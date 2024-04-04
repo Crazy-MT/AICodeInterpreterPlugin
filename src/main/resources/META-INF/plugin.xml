@@ -5,7 +5,7 @@
     <version>1.0</version>
     <vendor email="ytumaotong@gmail.com" url="https://github.com/Crazy-MT/AICodeInterpreterPlugin">AITranslate</vendor>
     <description><![CDATA[
-       The AICodeInterpreter, an IntelliJ plugin, seamlessly integrates Ollama and Google Gemini Pro. It interprets selected code snippets, generates comments, and polishes them, significantly enhancing code readability and comprehension. <br>
+       AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
     ]]></description>
 
     <idea-version since-build="145.0"/>

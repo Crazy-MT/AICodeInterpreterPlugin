@@ -23,7 +23,7 @@ class InterpreterAction : AnAction() {
 
     private fun createPopup() {
         balloon = JBPopupFactory.getInstance()
-                .createHtmlTextBalloonBuilder("加载中，稍安勿躁～", MessageType.INFO, null)
+                .createHtmlTextBalloonBuilder("loading, please be patient~", MessageType.INFO, null)
                 .setFadeoutTime(15000)
                 .setHideOnAction(true)
                 .createBalloon()
@@ -49,7 +49,6 @@ class InterpreterAction : AnAction() {
             balloon?.show(JBPopupFactory.getInstance().guessBestPopupLocation(editor), Balloon.Position.below)
 
             Thread{
-                /* 第二步 ---> API查询 */
                 requestNetData(fileExtension, selectedText, object : NetCallback<ModelResult> {
                     override fun onSuccess(data: ModelResult) {
                         println(data.toString())
@@ -58,7 +57,7 @@ class InterpreterAction : AnAction() {
                             if (selectedText.length < 50) {
                                 text = "$selectedText:\n${data.result}"
                             } else {
-                                text = "段落：\n${data.result}"
+                                text = "${data.result}"
                             }
                         } else {
                             text = "error:${data.error}"

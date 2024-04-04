@@ -9,14 +9,16 @@ import java.net.URL
 import java.io.OutputStreamWriter
 import java.net.URLEncoder
 
-val SourceOllama = "Ollama(本地模型)"
+val SourceOllama = "Ollama(local model)"
 val SourceGemini = "Gemini"
 val SourceOpenAI = "OpenAI"
+val SourceFreeGPT = "FreeGPT"
 
 var sourceType = LocalData.read("sourceType")
 
 var ollamaURL = LocalData.read("ollamaURL")
 var modelName = LocalData.read("modelName")
+
 var geminiAPIKey = LocalData.read("geminiAPIKey")
 var geminiURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent"
 
@@ -27,6 +29,11 @@ var openAIAPIKey = LocalData.read("openAIAPIKey")
 fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<ModelResult>) {
     try {
         val encodedQueryWord = URLEncoder.encode(queryWord.replace(Regex("[*+\\- \r]+"), " "), "UTF-8")
+        if (sourceType == SourceFreeGPT) {
+            FreeChatGPTAPI.chatWithGPT(file, encodedQueryWord, callBack)
+            return
+        }
+
         val (url, requestBody) = when (sourceType) {
             SourceOllama -> Pair(URL(ollamaURL), OllamaRequest(modelName, encodedQueryWord, file).toJson())
             SourceGemini -> Pair(URL("$geminiURL?key=$geminiAPIKey"), GeminiRequest(encodedQueryWord, file).toJson())

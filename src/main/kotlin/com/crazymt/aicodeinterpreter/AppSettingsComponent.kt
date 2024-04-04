@@ -15,15 +15,16 @@ import javax.swing.JRadioButton
  */
 class AppSettingsComponent {
     val panel: JPanel
+    private val rbFreeChatGPT = JRadioButton("Free ChatGPT");
 
-    private val rbOllama = JRadioButton("Ollama 配置");
+    private val rbOllama = JRadioButton("Ollama Setting");
     private val etOllamaURL = JBTextField("http://localhost:11434/api/generate")
     private val etModelName = JBTextField() // gemma:2b
 
-    private val rbGemini = JRadioButton("Gemini 配置");
+    private val rbGemini = JRadioButton("Gemini Setting");
     private val etGemini = JBTextField()
 
-    private val rbOpenAI = JRadioButton("OpenAI 配置");
+    private val rbOpenAI = JRadioButton("OpenAI Setting");
     private val etOpenAIURL = JBTextField()
     private val etOpenAIModelName = JBTextField()
     private val etOpenAIAPIKey = JBTextField()
@@ -32,10 +33,17 @@ class AppSettingsComponent {
 
     init {
         etOllamaURL.text = "http://localhost:11434/api/generate"
+        buttonGroup.add(rbFreeChatGPT)
         buttonGroup.add(rbOllama)
         buttonGroup.add(rbGemini)
         buttonGroup.add(rbOpenAI)
 
+        rbFreeChatGPT.addItemListener {
+            val source = it.source as JRadioButton
+            if (source.isSelected) {
+                sourceType = SourceFreeGPT
+            }
+        }
         rbOllama.addItemListener {
             val source = it.source as JRadioButton
             if (source.isSelected) {
@@ -57,25 +65,34 @@ class AppSettingsComponent {
             }
         }
 
-        buttonGroup.setSelected(rbGemini.model, true)
+        buttonGroup.setSelected(rbFreeChatGPT.model, true)
 
         panel = FormBuilder.createFormBuilder()
+            .addSeparator()
+            .addComponent(rbFreeChatGPT)
+            .addComponent(
+                JBLabel(
+                    "Please ensure that the connection with OpenAI is normal.",
+                    ComponentStyle.SMALL,
+                    UIUtil.FontColor.BRIGHTER
+                )
+            )
             .addSeparator()
             .addComponent(rbOllama)
             .addComponent(
                 JBLabel(
-                    "请安装 https://ollama.com/ 及本地大模型后使用",
+                    "Please install https://ollama.com/ and local model, then use it.",
                     ComponentStyle.SMALL,
                     UIUtil.FontColor.BRIGHTER
                 )
             )
             .addLabeledComponent(JBLabel("API URL"), etOllamaURL, 1, false)
-            .addLabeledComponent(JBLabel("API 模型"), etModelName, 1, false)
+            .addLabeledComponent(JBLabel("API Model Name"), etModelName, 1, false)
             .addSeparator()
             .addComponent(rbGemini)
             .addComponent(
                 JBLabel(
-                    "申请 apikey https://aistudio.google.com/app/apikey",
+                    "To apply for an API key, please visit https://aistudio.google.com/app/apikey",
                     ComponentStyle.SMALL,
                     UIUtil.FontColor.BRIGHTER
                 )
@@ -84,7 +101,7 @@ class AppSettingsComponent {
             .addComponent(rbOpenAI)
             .addComponent(
                 JBLabel(
-                    "支持类 OpenAI 的 API，包括但不限于 OpenAI、Moonshot、DeepSeek……，只需提供 API URL、API key、Model name 即可",
+                    "Supports APIs similar to OpenAI, including but not limited to OpenAI, Kimi(Moonshot), DeepSeek... Only API URL, API key, and Model name are required.",
                     ComponentStyle.SMALL,
                     UIUtil.FontColor.BRIGHTER
                 )
@@ -136,7 +153,11 @@ class AppSettingsComponent {
             if (rbOpenAI.isSelected) {
                 return SourceOpenAI
             }
-            return SourceGemini
+
+            if (rbFreeChatGPT.isSelected) {
+                return SourceFreeGPT
+            }
+            return SourceFreeGPT
         }
         set(newText) {
             if (newText == SourceOllama) {
@@ -148,6 +169,10 @@ class AppSettingsComponent {
 
             if (newText == SourceOpenAI) {
                 buttonGroup.setSelected(rbOpenAI.model, true)
+            }
+
+            if (newText == SourceFreeGPT) {
+                buttonGroup.setSelected(rbFreeChatGPT.model, true)
             }
         }
 

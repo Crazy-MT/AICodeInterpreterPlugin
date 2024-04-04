@@ -73,9 +73,6 @@ internal class AppSettingsConfigurable : Configurable {
         openAIURL = _openAIURL
         openAIModelName = _openAIModelName
         openAIAPIKey = _openAIAPIKey
-
-        ChatCompletionAPI.newSessionId;
-
     }
 
     override fun reset() {

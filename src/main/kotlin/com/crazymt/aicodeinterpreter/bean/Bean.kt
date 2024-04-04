@@ -113,7 +113,7 @@ data class OllamaRequest(
                 "model": "$model",
                 "prompt": "$prompt",
                 "stream": false,
-                "system": "你是资深代码工程师，这段文本是 ${file ?: "unknown"} 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：$prompt"
+                "system": "You are a senior software engineer. This piece of code is a part of the ${file ?: "unknown"} file. I need you to explain its purpose and provide a code example. Please keep it concise. Code: $prompt."
             }
         """.trimIndent()
     }
@@ -129,7 +129,7 @@ data class OpenAIRequest(
             {
              "model": "$model",
              "messages": [
-                {"role": "system", "content": "你是资深代码工程师，这段文本是 ${file ?: "unknown"} 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。"},
+                {"role": "system", "content": "You are a senior software engineer. This piece of code is a part of the ${file ?: "unknown"} file. I need you to explain its purpose and provide a code example. Please keep it concise. "},
                 {"role": "user", "content": "$queryWord"}
              ],
              "temperature": 0.3
@@ -161,7 +161,7 @@ data class GeminiRequest(
                 {
                   "parts": [
                     {
-                      "text": "你是资深代码工程师，这段文本是 ${file ?: "unknown"} 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：$queryWord"
+                      "text": "You are a senior software engineer. This piece of code is a part of the ${file ?: "unknown"} file. I need you to explain its purpose and provide a code example. Please keep it concise. Code: $queryWord."
                     }
                   ]
                 }

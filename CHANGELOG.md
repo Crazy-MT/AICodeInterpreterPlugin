@@ -15,6 +15,6 @@
 ### Changed
 - fix bug
 
-## [1.3.0]
+## [2.0.0]
 ### Changed
-- since build all
+- Free ChatGPT API
