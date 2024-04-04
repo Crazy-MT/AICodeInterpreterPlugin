@@ -3,6 +3,7 @@ package com.crazymt.aicodeinterpreter
 import AppSettingsComponent
 import com.crazymt.aicodeinterpreter.net.*
 import com.intellij.openapi.options.Configurable
+import org.apache.tools.ant.taskdefs.Sleep
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nullable
 import javax.swing.JComponent
@@ -72,6 +73,9 @@ internal class AppSettingsConfigurable : Configurable {
         openAIURL = _openAIURL
         openAIModelName = _openAIModelName
         openAIAPIKey = _openAIAPIKey
+
+        ChatCompletionAPI.newSessionId;
+
     }
 
     override fun reset() {

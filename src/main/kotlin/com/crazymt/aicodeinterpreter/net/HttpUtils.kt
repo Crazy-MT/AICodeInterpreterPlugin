@@ -18,6 +18,7 @@ var sourceType = LocalData.read("sourceType")
 var ollamaURL = LocalData.read("ollamaURL")
 var modelName = LocalData.read("modelName")
 var geminiAPIKey = LocalData.read("geminiAPIKey")
+var geminiURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent"
 
 var openAIURL = LocalData.read("openAIURL")
 var openAIModelName = LocalData.read("openAIModelName")
@@ -25,187 +26,80 @@ var openAIAPIKey = LocalData.read("openAIAPIKey")
 
 fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<ModelResult>) {
     try {
-        /*LocalData.read(queryWord)?.let {
-            try {
-                val bean = Gson().fromJson<TranslateResult>(it, TranslateResult::class.java)
-                callBack.onSuccess(bean)
-            } catch (e: JsonSyntaxException) {
-                callBack.onFail(" 返回解析失败，github issue to me：\n$it")
+        val encodedQueryWord = URLEncoder.encode(queryWord.replace(Regex("[*+\\- \r]+"), " "), "UTF-8")
+        val (url, requestBody) = when (sourceType) {
+            SourceOllama -> Pair(URL(ollamaURL), OllamaRequest(modelName, encodedQueryWord, file).toJson())
+            SourceGemini -> Pair(URL("$geminiURL?key=$geminiAPIKey"), GeminiRequest(encodedQueryWord, file).toJson())
+            SourceOpenAI -> Pair(URL(openAIURL), OpenAIRequest(openAIModelName, encodedQueryWord, file).toJson())
+            else -> throw IllegalArgumentException("Invalid sourceType: $sourceType")
+        }
+
+        val connection = (url.openConnection() as HttpURLConnection).apply {
+            requestMethod = "POST"
+            connectTimeout = 3000
+            readTimeout = 30000
+            setRequestProperty("Content-Type", "application/json")
+            setRequestProperty("Accept", "application/json")
+            when(sourceType) {
+                SourceOpenAI -> {
+                    setRequestProperty("Authorization", "Bearer $openAIAPIKey")
+                }
             }
-            return
-        }*/
-        val queryStr = URLEncoder.encode(queryWord.replace(Regex("[*+\\- \r]+"), " "), "UTF-8")
+            doOutput = true
+        }
+
+        OutputStreamWriter(connection.outputStream).use { writer ->
+            writer.write(requestBody)
+            writer.flush()
+        }
+
+        val responseCode = connection.responseCode
+        val responseBody = if (responseCode == HttpURLConnection.HTTP_OK) {
+            connection.inputStream.use { it.reader().readText() }
+        } else {
+            connection.errorStream.use { it?.reader()?.readText() }
+        }
 
         when (sourceType) {
-            SourceOllama -> {
-                val url = URL(ollamaURL)
-
-                val connection = url.openConnection() as HttpURLConnection
-
-                connection.requestMethod = "POST"
-                connection.connectTimeout = 3000
-                connection.readTimeout = 30000
-                connection.setRequestProperty("Content-Type", "application/json")
-                connection.setRequestProperty("Accept", "application/json")
-
-                connection.doOutput = true
-
-                val jsonInputString = """
-                    {
-                        "model": "$modelName",
-                        "prompt": "${queryStr}",
-                        "stream": false,
-                        "system":"你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryStr}"
-                    }
-                    """.trimIndent()
-//                println(jsonInputString)
-                val outputStream = OutputStreamWriter(connection.outputStream)
-                outputStream.write(jsonInputString)
-                outputStream.flush()
-
-                if (connection.responseCode == 200) {
-                    val ins = connection.inputStream
-
-                    val content = StreamUtils.getStringFromStream(ins)
-                    if (content.isNotBlank()) {
-                        val result = Gson().fromJson(content, OllamaBean::class.java).toModelResult()
-                        callBack.onSuccess(result)
-                        //                    LocalData.store(queryWord, Gson().toJson(result))
-                    } else {
-                        callBack.onFail("翻译接口返回为空")
-                    }
-                } else {
-                    callBack.onFail("错误码：${connection.responseCode}\n错误信息：\n${connection.responseMessage}")
-                }
-                return
-            }
-
-            SourceGemini -> {
-                val url =
-                    URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=$geminiAPIKey")
-
-                val connection = url.openConnection() as HttpURLConnection
-
-                connection.requestMethod = "POST"
-                connection.connectTimeout = 3000
-                connection.readTimeout = 30000
-                connection.setRequestProperty("Content-Type", "application/json")
-                connection.setRequestProperty("Accept", "application/json")
-
-                connection.doOutput = true
-                val jsonInputString = """
-                    {
-                      "contents": [
-                        {
-                          "parts": [
-                            {
-                              "text": "你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。代码：${queryStr}"
-                            }
-                          ]
-                        }
-                      ],
-                      "generationConfig": {
-                        "temperature": 1,
-                        "topK": 1,
-                        "topP": 1,
-                        "maxOutputTokens": 2048,
-                        "stopSequences": []
-                      },
-                      "safetySettings": [
-                        {
-                          "category": "HARM_CATEGORY_HARASSMENT",
-                          "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                        },
-                        {
-                          "category": "HARM_CATEGORY_HATE_SPEECH",
-                          "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                        },
-                        {
-                          "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                          "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                        },
-                        {
-                          "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                          "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                        }
-                      ]
-                    }
-                    """.trimIndent()
-
-                val outputStream = OutputStreamWriter(connection.outputStream)
-                outputStream.write(jsonInputString)
-                outputStream.flush()
-
-                if (connection.responseCode == 200) {
-                    val ins = connection.inputStream
-
-                    val content = StreamUtils.getStringFromStream(ins)
-                    if (content.isNotBlank()) {
-                        val result = Gson().fromJson(content, GeminiBean::class.java).toModelResult()
-                        callBack.onSuccess(result)
-                        //                    LocalData.store(queryWord, Gson().toJson(result))
-                    } else {
-                        callBack.onFail("翻译接口返回为空")
-                    }
-                } else {
-                    callBack.onFail("错误码：${connection.responseCode}\n错误信息：\n${connection.responseMessage}")
-                }
-                return
-            }
-
-            SourceOpenAI -> {
-                val url = URL(openAIURL)
-
-                val connection = url.openConnection() as HttpURLConnection
-
-                connection.requestMethod = "POST"
-                connection.connectTimeout = 3000
-                connection.readTimeout = 30000
-                connection.setRequestProperty("Content-Type", "application/json")
-                connection.setRequestProperty("Authorization", "Bearer $openAIAPIKey")
-
-                connection.doOutput = true
-                val jsonInputString = """
-                    {
-                     "model": "$openAIModelName",
-                     "messages": [
-                        {"role": "system", "content": "你是资深代码工程师，这段文本是 $file 文件的一部分，我需要你告诉这段代码的作用，以及给我代码示例。请用中文回答。"},
-                        {"role": "user", "content": "${queryStr}"}
-                     ],
-                     "temperature": 0.3
-                    }
-                    """.trimIndent()
-
-                val outputStream = OutputStreamWriter(connection.outputStream)
-                outputStream.write(jsonInputString)
-                outputStream.flush()
-
-                if (connection.responseCode == 200) {
-                    val ins = connection.inputStream
-
-                    val content = StreamUtils.getStringFromStream(ins)
-                    if (content.isNotBlank()) {
-                        val result = Gson().fromJson(content, OpenAIBean::class.java).toModelResult()
-                        callBack.onSuccess(result)
-                        //                    LocalData.store(queryWord, Gson().toJson(result))
-                    } else {
-                        callBack.onFail("翻译接口返回为空")
-                    }
-                } else {
-                    callBack.onFail("错误码：${connection.responseCode}\n错误信息：\n${connection.responseMessage}")
-                }
-                return
-            }
-
-            else -> {
-                callBack.onFail("不支持的翻译源类型$sourceType")
-                return
-            }
+            SourceOllama -> responseBody?.let { handleOllamaResponse(responseCode, it, callBack) }
+            SourceGemini -> responseBody?.let { handleGeminiResponse(responseCode, it, callBack) }
+            SourceOpenAI -> responseBody?.let { handleOpenAIResponse(responseCode, it, callBack) }
+            else -> callBack.onFail("Invalid sourceType: $sourceType")
         }
 
     } catch (e: IOException) {
-        callBack.onFail("无法访问：\n${e.message}")
+        callBack.onFail("Failed to connect: ${e.message}")
     }
 }
+
+private fun handleOllamaResponse(responseCode: Int, responseBody: String, callBack: NetCallback<ModelResult>) {
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+        val result = Gson().fromJson(responseBody, OllamaBean::class.java).toModelResult()
+        callBack.onSuccess(result)
+    } else {
+        callBack.onFail("Error code: $responseCode\nError message:\n$responseBody")
+    }
+}
+
+private fun handleGeminiResponse(responseCode: Int, responseBody: String, callBack: NetCallback<ModelResult>) {
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+        val result = Gson().fromJson(responseBody, GeminiBean::class.java).toModelResult()
+        callBack.onSuccess(result)
+    } else {
+        callBack.onFail("Error code: $responseCode\nError message:\n$responseBody")
+    }
+}
+
+private fun handleOpenAIResponse(responseCode: Int, responseBody: String, callBack: NetCallback<ModelResult>) {
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+        val result = Gson().fromJson(responseBody, OpenAIBean::class.java).toModelResult()
+        callBack.onSuccess(result)
+    } else {
+        callBack.onFail("Error code: $responseCode\nError message:\n$responseBody")
+    }
+}
+
+private inline fun <reified T> T.toJson(): String = Gson().toJson(this)
+
 
 

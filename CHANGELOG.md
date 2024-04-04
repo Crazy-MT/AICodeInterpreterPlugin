@@ -14,3 +14,7 @@
 ## [1.2.0]
 ### Changed
 - fix bug
+
+## [1.3.0]
+### Changed
+- since build all
