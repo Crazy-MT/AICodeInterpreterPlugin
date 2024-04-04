@@ -1,4 +1,9 @@
 # AICodeInterpreter
+This repository may contain the earliest implementation of free Java/Kotlin version of the GPT-3.5-Turbo API code.
+Utilize the unlimited free GPT-3.5-Turbo API service provided by the login-free ChatGPT Web.
+
+此存储库可能包含了最早实现的 Java/Kotlin 版本免费 GPT-3.5-Turbo API 的代码。
+利用由无需登录的 ChatGPT Web 提供的无限免费的 GPT-3.5-Turbo API 服务。
 <!-- Plugin description -->
 ## Description
 AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
