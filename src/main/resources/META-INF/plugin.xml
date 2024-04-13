@@ -5,10 +5,10 @@
     <version>1.0</version>
     <vendor email="ytumaotong@gmail.com" url="https://github.com/Crazy-MT/AICodeInterpreterPlugin">AITranslate</vendor>
     <description><![CDATA[
-       AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
+AICodeInterpreter is an IntelliJ IDEA plugin that provides developers with convenient code interpretation functionality. The plugin defaults to supporting the free ChatGPT 3.5 API, allowing users to convert selected code snippets into natural language descriptions. Additionally, users can configure the plugin to use other generative language models such as Ollama, Google Gemini Pro, Moonshot, and DeepSeek as needed.
     ]]></description>
 
-    <idea-version since-build="145.0"/>
+<!--    <idea-version since-build="145.0"/>-->
 
     <depends>com.intellij.modules.platform</depends>
 
@@ -28,5 +28,9 @@
                 instance="com.crazymt.aicodeinterpreter.AppSettingsConfigurable"
                 id="AICodeInterpreter.AppSettingsConfigurable"
                 displayName="AICodeInterpreter"/>
+        <projectService serviceImplementation="com.crazymt.aicode.core.ConversationManager"/>
+
+        <projectService serviceImplementation="com.crazymt.aicode.FreeChatGPTHandler"/>
+
     </extensions>
 </idea-plugin>

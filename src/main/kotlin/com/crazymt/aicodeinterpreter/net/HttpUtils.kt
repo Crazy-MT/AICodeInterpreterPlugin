@@ -1,12 +1,13 @@
 package com.crazymt.aicodeinterpreter.net
 
+import com.crazymt.aicode.FreeChatGPTHandler
 import com.crazymt.aicodeinterpreter.bean.*
 import com.google.gson.Gson
+import com.intellij.openapi.project.Project
 import java.io.IOException
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
-
-import java.io.OutputStreamWriter
 import java.net.URLEncoder
 
 val SourceOllama = "Ollama(local model)"
@@ -26,11 +27,17 @@ var openAIURL = LocalData.read("openAIURL")
 var openAIModelName = LocalData.read("openAIModelName")
 var openAIAPIKey = LocalData.read("openAIAPIKey")
 
-fun requestNetData(file: String?, queryWord: String, callBack: NetCallback<ModelResult>) {
+fun requestNetData(project: Project?, file: String?, queryWord: String, callBack: NetCallback<ModelResult>) {
     try {
         val encodedQueryWord = URLEncoder.encode(queryWord.replace(Regex("[*+\\- \r]+"), " "), "UTF-8")
         if (sourceType == SourceFreeGPT) {
-            FreeChatGPTAPI.chatWithGPT(file, encodedQueryWord, callBack)
+//            FreeChatGPTAPI.chatWithGPT(file, encodedQueryWord, callBack)
+            val chatGPTHandler: FreeChatGPTHandler = project!!.getService(
+                FreeChatGPTHandler::class.java
+            )
+
+            chatGPTHandler.handle(project, encodedQueryWord, file, callBack);
+
             return
         }
 

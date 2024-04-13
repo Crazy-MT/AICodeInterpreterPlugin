@@ -1,4 +1,5 @@
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.kotlin.builtins.StandardNames.FqNames.target
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
@@ -21,7 +22,29 @@ version = properties("pluginVersion")
 
 // Configure project's dependencies
 repositories {
+    maven {
+        setUrl("https://maven.aliyun.com/nexus/content/groups/public/")
+        setUrl("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
     mavenCentral()
+    gradlePluginPortal()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath("com.guardsquare:proguard-gradle:7.4.0")
+    }
+}
+
+dependencies {
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp-sse:4.10.0")
+    implementation("com.vladsch.flexmark:flexmark:0.62.2")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -50,7 +73,98 @@ qodana {
     showReport.set(System.getenv("QODANA_SHOW_REPORT").toBoolean())
 }
 
+tasks.register<proguard.gradle.ProGuardTask>("proguard") {
+    verbose()
+//    keepdirectories()// By default, directory entries are removed.
+    ignorewarnings()
+    target("11")
+
+    // Alternatively put your config in a separate file
+    configuration("proguard-rules.pro")
+
+    // Use the jar task output as a input jar. This will automatically add the necessary task dependency.
+    injars(tasks.named("jar"))
+
+    outjars(tasks.named("jar").get().outputs.files.singleFile.absolutePath.replace(".jar", "-obfuscated.jar"))
+
+    val javaHome = System.getProperty("java.home")
+    // Automatically handle the Java version of this build, don't support JBR
+    // As of Java 9, the runtime classes are packaged in modular jmod files.
+//        libraryjars(
+//            // filters must be specified first, as a map
+//            mapOf("jarfilter" to "!**.jar",
+//                  "filter"    to "!module-info.class"),
+//            "$javaHome/jmods/java.base.jmod"
+//        )
+
+    // Add all JDK deps
+    if( ! properties("skipProguard").toBoolean()) {
+        File("$javaHome/jmods/").listFiles()!!.forEach { libraryjars(it.absolutePath) }
+    }
+
+//    libraryjars(configurations.runtimeClasspath.get().files)
+//    val ideaPath = getIDEAPath()
+
+    // Add all java plugins to classpath
+//    File("$ideaPath/plugins/java/lib").listFiles()!!.forEach { libraryjars(it.absolutePath) }
+    // Add all IDEA libs to classpath
+//    File("$ideaPath/lib").listFiles()!!.forEach { libraryjars(it.absolutePath) }
+
+    libraryjars(configurations.compileClasspath.get())
+
+    dontshrink()
+    dontoptimize()
+
+//    allowaccessmodification() //you probably shouldn't use this option when processing code that is to be used as a library, since classes and class members that weren't designed to be public in the API may become public
+
+    adaptclassstrings("**.xml")
+    adaptresourcefilecontents("**.xml")// or   adaptresourcefilecontents()
+
+    // Allow methods with the same signature, except for the return type,
+    // to get the same obfuscation name.
+    overloadaggressively()
+    // Put all obfuscated classes into the nameless root package.
+//    repackageclasses("")
+
+    printmapping("build/proguard-mapping.txt")
+
+    adaptresourcefilenames()
+    optimizationpasses(9)
+    allowaccessmodification()
+    mergeinterfacesaggressively()
+    renamesourcefileattribute("SourceFile")
+    keepattributes("Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod")
+
+//    keep("""class org.jetbrains.plugins.template.MyBundle
+//    """.trimIndent())
+//
+//    keep("""class beansoft.mykeep.**
+//    """.trimIndent())
+//    keep("class beansoft.mykeep.**{*;}")
+}
+
+
 tasks {
+
+    prepareSandbox {
+        if( !properties("skipProguard").toBoolean()) {
+            dependsOn("proguard")
+            doFirst {
+                val original = File("${buildDir.absoluteFile.absolutePath}/libs/${project.name}-$version.jar")
+                val obfuscated =  File("${buildDir.absoluteFile.absolutePath}/libs/${project.name}-$version-obfuscated.jar")
+                if (original.exists() && obfuscated.exists()) {
+                    original.delete()
+                    obfuscated.renameTo(original)
+                    println("plugin file obfuscated")
+                } else {
+                    println("error: some file does not exist, plugin file not obfuscated")
+                }
+            }
+        }
+
+    }
+
+
     // Set the JVM compatibility versions
     properties("javaVersion").let {
         withType<JavaCompile> {

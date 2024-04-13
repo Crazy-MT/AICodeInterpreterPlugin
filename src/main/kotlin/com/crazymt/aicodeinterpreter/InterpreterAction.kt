@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.crazymt.aicodeinterpreter.bean.ModelResult
-import com.crazymt.aicodeinterpreter.net.NetCallback
+import com.crazymt.aicodeinterpreter.bean.NetCallback
 import com.crazymt.aicodeinterpreter.net.requestNetData
 
 class InterpreterAction : AnAction() {
@@ -24,7 +24,7 @@ class InterpreterAction : AnAction() {
     private fun createPopup() {
         balloon = JBPopupFactory.getInstance()
                 .createHtmlTextBalloonBuilder("loading, please be patient~", MessageType.INFO, null)
-                .setFadeoutTime(15000)
+                .setFadeoutTime(30000)
                 .setHideOnAction(true)
                 .createBalloon()
     }
@@ -49,7 +49,8 @@ class InterpreterAction : AnAction() {
             balloon?.show(JBPopupFactory.getInstance().guessBestPopupLocation(editor), Balloon.Position.below)
 
             Thread{
-                requestNetData(fileExtension, selectedText, object : NetCallback<ModelResult> {
+                requestNetData(e.project, fileExtension, selectedText, object :
+                    NetCallback<ModelResult> {
                     override fun onSuccess(data: ModelResult) {
                         println(data.toString())
                         val text: String
@@ -80,7 +81,7 @@ class InterpreterAction : AnAction() {
         ApplicationManager.getApplication().invokeLater {
             JBPopupFactory.getInstance()
                     .createHtmlTextBalloonBuilder(result, MessageType.INFO, null)
-                    .setFadeoutTime(15000)
+//                    .setFadeoutTime(15000)
                     .setHideOnAction(true)
                     .createBalloon()
                     .show(JBPopupFactory.getInstance().guessBestPopupLocation(editor), Balloon.Position.below)

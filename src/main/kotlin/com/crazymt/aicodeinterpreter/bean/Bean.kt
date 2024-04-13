@@ -57,8 +57,9 @@ data class Turnstile(
 )
 
 data class OpenAIStreamBean(
-    val message: ChatMessage
-)
+    val message: ChatMessage,
+    val conversation_id:String,
+    )
 
 data class ChatMessage(
     val id: String,

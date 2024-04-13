@@ -35,7 +35,7 @@ Key features include:
 
 <kbd>Choose Code/Text</kbd> > <kbd>Right Click / Alt(Option)+C</kbd> > <kbd>AICodeInterpreter</kbd> >
 
-## 效果
+## Results
 ![1.png](image/4.png)
 ![2.png](image/5.png)
 ![3.png](image/6.png)
