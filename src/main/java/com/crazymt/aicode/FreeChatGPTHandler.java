@@ -1,7 +1,7 @@
 package com.crazymt.aicode;
 
 import com.crazymt.aicodeinterpreter.bean.ModelResult;
-import com.crazymt.aicodeinterpreter.bean.NetCallback;
+import com.crazymt.aicodeinterpreter.net.NetCallback;
 import com.crazymt.aicodeinterpreter.bean.OpenAIToken;
 import com.crazymt.aicode.core.ConversationManager;
 import com.crazymt.aicodeinterpreter.net.HttpUtilsKt;
@@ -146,15 +146,19 @@ public class FreeChatGPTHandler extends AbstractHandler {
                         if (data.contains("\"is_complete\": true")) {
 //                                mainPanel.getContentPanel().getMessages().add(OfficialBuilder.assistantMessage(gpt35Stack.pop()));
                             gpt35Stack.clear();
+
+                            if (callback != null) {
+                                callback.onSuccess(new ModelResult(HttpUtilsKt.getSourceFreeGPT(), "en", "zh", question, parseResult.getHtml(), ""));
+                            }
                         } else {
                             gpt35Stack.push(parseResult.getSource());
                         }
                         // Copy action only needed source content
 //                        component.setSourceContent(parseResult.getSource());
 //                        component.setContent(parseResult.getHtml());
-                        if (callback != null) {
+                        /*if (callback != null) {
                             callback.onSuccess(new ModelResult(HttpUtilsKt.getSourceFreeGPT(), "en", "zh", question, parseResult.getHtml(), ""));
-                        }
+                        }*/
                     } catch (Exception e) {
                         LOG.error("ChatGPT: Parse response error, e={}, message={}", e, e.getMessage());
 //                        component.setContent(e.getMessage());

@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.MessageType
 import com.intellij.openapi.ui.popup.Balloon
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.crazymt.aicodeinterpreter.bean.ModelResult
-import com.crazymt.aicodeinterpreter.bean.NetCallback
+import com.crazymt.aicodeinterpreter.net.NetCallback
 import com.crazymt.aicodeinterpreter.net.requestNetData
 
 class InterpreterAction : AnAction() {

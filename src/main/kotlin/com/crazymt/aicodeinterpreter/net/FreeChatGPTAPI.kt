@@ -1,7 +1,6 @@
 package com.crazymt.aicodeinterpreter.net
 
 import com.crazymt.aicodeinterpreter.bean.ModelResult
-import com.crazymt.aicodeinterpreter.bean.NetCallback
 import com.crazymt.aicodeinterpreter.bean.OpenAIStreamBean
 import com.crazymt.aicodeinterpreter.bean.OpenAIToken
 import com.google.gson.Gson

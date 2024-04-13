@@ -1,7 +1,7 @@
 package com.crazymt.aicode;
 
 import com.crazymt.aicodeinterpreter.bean.ModelResult;
-import com.crazymt.aicodeinterpreter.bean.NetCallback;
+import com.crazymt.aicodeinterpreter.net.NetCallback;
 import com.intellij.openapi.project.Project;
 
 import java.security.KeyManagementException;

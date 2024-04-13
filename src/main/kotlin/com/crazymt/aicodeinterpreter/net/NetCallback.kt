@@ -1,4 +1,4 @@
-package com.crazymt.aicodeinterpreter.bean
+package com.crazymt.aicodeinterpreter.net
 
 interface NetCallback<T> {
     fun onSuccess(value: T)

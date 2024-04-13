@@ -15,7 +15,10 @@ public class OfficialParser {
         ConversationManager.getInstance(project).setParentMessageId(parentId);
         ConversationManager.getInstance(project).setConversationId(conversationId);
 
-        String answer = resultData.getMessage().getContent().getParts().get(0);
+        String answer = "";
+        if (resultData.getMessage().getMetadata().is_complete()) {
+            answer = resultData.getMessage().getContent().getParts().get(0);
+        }
 
         ParseResult parseResult = new ParseResult();
         parseResult.source = answer;
